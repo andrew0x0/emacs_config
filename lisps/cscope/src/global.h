@@ -30,7 +30,7 @@
  DAMAGE. 
  =========================================================================*/
 
-/* $Id: global.h,v 1.37 2009/04/10 13:39:23 broeker Exp $ */
+/* $Id: global.h,v 1.39 2014/11/20 21:12:54 broeker Exp $ */
 
 /*	cscope - interactive C symbol cross-reference
  *
@@ -81,17 +81,8 @@ char	*memset();
 #include "invlib.h"	/* inverted index library */
 #include "library.h"	/* library function return values */
 
-/* Fallback, in case 'configure' failed to do its part of the job */
-#ifndef RETSIGTYPE
-#if SVR2 || BSD && !sun
-#define RETSIGTYPE int
-#else
-#define RETSIGTYPE void
-#endif
-#endif /* RETSIGTYPE */
-
 #ifndef HAVE_SIGHANDLER_T
-typedef RETSIGTYPE (*sighandler_t)(int);
+typedef void (*sighandler_t)(int);
 #endif
 
 #if HAVE_STDARG_H
@@ -343,6 +334,7 @@ char	*finddef(char *pattern);
 char	*findfile(char *dummy);
 char	*findinclude(char *pattern);
 char	*findsymbol(char *pattern);
+char	*findassign(char *pattern);
 char	*findregexp(char *egreppat);
 char	*findstring(char *pattern);
 char	*inviewpath(char *file);

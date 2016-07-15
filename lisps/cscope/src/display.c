@@ -62,7 +62,7 @@
 typedef jmp_buf sigjmp_buf;
 #endif
 
-static char const rcsid[] = "$Id: display.c,v 1.30 2009/04/10 13:39:23 broeker Exp $";
+static char const rcsid[] = "$Id: display.c,v 1.34 2014/11/20 21:12:54 broeker Exp $";
 
 int	booklen;		/* OGS book name display field length */
 int	*displine;		/* screen line of displayed reference */
@@ -112,11 +112,12 @@ static	struct	{		/* text of input fields */
 	{"Find this", "egrep pattern",			findregexp},
 	{"Find this", "file",				findfile},
 	{"Find", "files #including this file",		findinclude},
+	{"Find", "assignments to this symbol", 		findassign},
 	{"Find all", "function definitions",		findallfcns},	/* samuel only */
 };
 
 /* Internal prototypes: */
-static	RETSIGTYPE	jumpback(int sig);
+static	void	jumpback(int sig);
 
 /* initialize display parameters */
 
@@ -137,7 +138,7 @@ dispinit(void)
 		mdisprefs = strlen(dispchars);
 
 	/* allocate the displayed line array */
-	displine = mymalloc(mdisprefs * sizeof(int));
+	displine = mymalloc(mdisprefs * sizeof(*displine));
 }
 
 /* display a page of the references */
@@ -349,11 +350,7 @@ display(void)
 	i = totallines - nextline + 1;
 	bottomline = nextline;
 	if (i > 0) {
-	    s = "s";
-	    if (i == 1) {
-		s = "";
-	    }
-	    printw("* %d more line%s - press the space bar to display more *", i, s);
+	    printw("* Lines %d-%d of %d, %d more - press the space bar to display more *", topline, bottomline, totallines, i);
 	}
 	/* if this is the last page of references */
 	else if (topline > 1 && nextline > totallines) {
@@ -401,7 +398,7 @@ atchange(void)
 /* search for the symbol or text pattern */
 
 /*ARGSUSED*/
-static RETSIGTYPE
+static void
 jumpback(int sig)
 {
 	/* HBB NEW 20031008: try whether reinstating signal handler
@@ -567,10 +564,11 @@ myperror(char *text)
 	char	msg[MSGLEN + 1];	/* message */
 	char	*s;
 
-	s = "Unknown error";
 #ifdef HAVE_STRERROR
         s = strerror(errno);
 #else
+	s = "Unknown error";
+
 	if (errno < sys_nerr) {
 		s = sys_errlist[errno];
 	}

@@ -53,6 +53,9 @@
 #include <sys/types.h>	/* needed by stat.h */
 #include <sys/stat.h>	/* stat */
 #include <signal.h>
+#ifdef HAVE_GETOPT_LONG 
+#include <getopt.h>
+#endif
 
 /* defaults for unset environment variables */
 #define	EDITOR	"vi"
@@ -64,7 +67,7 @@
 #define DFLT_INCDIR "/usr/include"
 #endif
 
-static char const rcsid[] = "$Id: main.c,v 1.46 2009/04/10 13:39:23 broeker Exp $";
+static char const rcsid[] = "$Id: main.c,v 1.57 2014/11/20 21:12:54 broeker Exp $";
 
 /* note: these digraph character frequencies were calculated from possible 
    printable digraphs in the cross-reference for the C compiler */
@@ -95,6 +98,7 @@ BOOL	kernelmode;		/* don't use DFLT_INCDIR - bad for kernels */
 BOOL	linemode = NO;		/* use line oriented user interface */
 BOOL	verbosemode = NO;	/* print extra information on line mode */
 BOOL	recurse_dir = NO;	/* recurse dirs when searching for src files */
+BOOL	remove_symfile_onexit=NO;
 char	*namefile;		/* file of file names */
 BOOL	ogs;			/* display OGS book and subsystem names */
 char	*prependpath;		/* prepend path to file names */
@@ -112,6 +116,7 @@ static	BOOL	onesearch;		/* one search only in line mode */
 static	char	*reflines;		/* symbol reference lines file */
 
 /* Internal prototypes: */
+static  void    error_usage(void);
 static	void	initcompress(void);
 static	void	longusage(void);
 static	void	skiplist(FILE *oldrefs);
@@ -130,6 +135,153 @@ sigwinch_handler(int sig, siginfo_t *info, void *unused)
     (void) unused;
     if(incurses == YES)
         ungetch(KEY_RESIZE);
+}
+#endif
+
+#ifdef HAVE_GETOPT_LONG
+struct option lopts[] = {
+	{"help", 0, NULL, 'h'},
+	{"version", 0, NULL, 'V'},
+	{0, 0, 0, 0}
+};
+
+char ** parse_options(int *argc, char **argv)
+{
+	int opt;
+	int longind;
+	char path[PATHLEN + 1];     /* file path */
+	char *s;
+	int argcc = *argc;
+	
+
+	while ((opt = getopt_long(argcc, argv,
+	       "hVbcCdeF:f:I:i:kLl0:1:2:3:4:5:6:7:8:9:P:p:qRs:TUuvX",
+	       lopts, &longind)) != -1) {
+		switch(opt) {
+
+		case '?':
+			usage();
+			myexit(1);
+			break;
+		case 'X':
+			remove_symfile_onexit = YES;
+			break;
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			/* The input fields numbers for line mode operation */
+			field = opt - '0';
+			if (strlen(optarg) > PATHLEN) {
+				    postfatal("\
+					cscope: pattern too long, cannot be > \
+					%d characters\n", PATLEN);
+			}
+			strcpy(Pattern, optarg);	
+			break;
+		case 'b':	/* only build the cross-reference */
+			buildonly = YES;
+			linemode  = YES;
+			break;
+		case 'c':	/* ASCII characters only in crossref */
+			compress = NO;
+			break;
+		case 'C':	/* turn on caseless mode for symbol searches */
+			caseless = YES;
+			egrepcaseless(caseless); /* simulate egrep -i flag */
+			break;
+		case 'd':	/* consider crossref up-to-date */
+			isuptodate = YES;
+			break;
+		case 'e':	/* suppress ^E prompt between files */
+			editallprompt = NO;
+			break;
+		case 'h':
+			longusage();
+			myexit(1);
+			break;
+		case 'k':	/* ignore DFLT_INCDIR */
+			kernelmode = YES;
+			break;
+		case 'L':
+			onesearch = YES;
+			/* FALLTHROUGH */
+		case 'l':
+			linemode = YES;
+			break;
+		case 'v':
+			verbosemode = YES;
+			break;
+		case 'V':
+			fprintf(stderr, "%s: version %d%s\n", argv0,
+				FILEVERSION, FIXVERSION);
+			myexit(0);
+			break;
+		case 'q':	/* quick search */
+			invertedindex = YES;
+			break;
+		case 'T':	/* truncate symbols to 8 characters */
+			trun_syms = YES;
+			break;
+		case 'u':	/* unconditionally build the cross-reference */
+			unconditional = YES;
+			break;
+		case 'U':	/* assume some files have changed */
+			fileschanged = YES;
+			break;
+		case 'R':
+			recurse_dir = YES;
+			break;
+		case 'f':	/* alternate cross-reference file */
+			reffile = optarg;
+			if (strlen(reffile) > sizeof(path) - 3) {
+				postfatal("\
+					cscope: reffile too long, cannot \
+					be > %d characters\n", sizeof(path) - 3);
+				/* NOTREACHED */
+			}
+			strcpy(path, reffile);
+
+			s = path + strlen(path);
+			strcpy(s, ".in");
+			invname = my_strdup(path);
+			strcpy(s, ".po");
+			invpost = my_strdup(path);
+			break;
+
+		case 'F':	/* symbol reference lines file */
+			reflines = optarg;
+			break;
+		case 'i':	/* file containing file names */
+			namefile = optarg;
+			break;
+		case 'I':	/* #include file directory */
+			includedir(optarg);
+			break;
+		case 'p':	/* file path components to display */
+			dispcomponents = atoi(optarg);
+			break;
+		case 'P':	/* prepend path to file names */
+			prependpath = optarg;
+			break;
+		case 's':	/* additional source file directory */
+			sourcedir(optarg);
+			break;
+		}
+	}
+	/*
+ 	 * This adjusts argv so that we only see the remaining 
+ 	 * args.  Its ugly, but we need to do it so that the rest
+ 	 * of the main routine doesn't get all confused
+ 	 */
+	*argc = *argc - optind;
+	return argv + optind;
 }
 #endif
 
@@ -156,6 +308,9 @@ main(int argc, char **argv)
     argv0 = argv[0];
 
     /* set the options */
+#ifdef HAVE_GETOPT_LONG 
+	argv = parse_options(&argc, argv);
+#else
     while (--argc > 0 && (*++argv)[0] == '-') {
 	/* HBB 20030814: add GNU-style --help and --version options */
 	if (strequal(argv[0], "--help")
@@ -175,7 +330,7 @@ main(int argc, char **argv)
 	}
 
 	for (s = argv[0] + 1; *s != '\0'; s++) {
-			
+
 	    /* look for an input field number */
 	    if (isdigit((unsigned char) *s)) {
 		field = *s - '0';
@@ -245,6 +400,9 @@ cscope: pattern too long, cannot be > %d characters\n", PATLEN);
 	    case 'R':
 		recurse_dir = YES;
 		break;
+		case 'X':
+		remove_symfile_onexit = YES;
+		break;
 	    case 'f':	/* alternate cross-reference file */
 	    case 'F':	/* symbol reference lines file */
 	    case 'i':	/* file containing file names */
@@ -260,14 +418,14 @@ cscope: pattern too long, cannot be > %d characters\n", PATLEN);
 		if (*s == '\0') {
 		    fprintf(stderr, "%s: -%c option: missing or empty value\n", 
 			    argv0, c);
-		    goto usage;
+		    error_usage();
 		}
 		switch (c) {
 		case 'f':	/* alternate cross-reference file */
 		    reffile = s;
-		    if (strlen(reffile) > sizeof(path) - 1) {
+		    if (strlen(reffile) > sizeof(path) - 3) {
 			  postfatal("\
-cscope: reffile too long, cannot be > %d characters\n", sizeof(path) - 1);
+cscope: reffile too long, cannot be > %d characters\n", sizeof(path) - 3);
 			  /* NOTREACHED */
 		    }
 		    strcpy(path, s);
@@ -298,7 +456,7 @@ cscope: reffile too long, cannot be > %d characters\n", sizeof(path) - 1);
 			fprintf(stderr, "\
 %s: -p option: missing or invalid numeric value\n", 
 				argv0);
-			goto usage;
+			error_usage();
 		    }
 		    dispcomponents = atoi(s);
 		    break;
@@ -314,10 +472,7 @@ cscope: reffile too long, cannot be > %d characters\n", sizeof(path) - 1);
 	    default:
 		fprintf(stderr, "%s: unknown option: -%c\n", argv0, 
 			*s);
-	    usage:
-		usage();
-		fprintf(stderr, "Try the -h option for more information.\n");
-		myexit(1);
+		error_usage();
 	    } /* switch(option letter) */
 	} /* for(option) */
     nextarg:	
@@ -325,6 +480,7 @@ cscope: reffile too long, cannot be > %d characters\n", sizeof(path) - 1);
     } /* while(argv) */
 
  lastarg:
+#endif
     /* read the environment */
     editor = mygetenv("EDITOR", EDITOR);
     editor = mygetenv("VIEWER", editor); /* use viewer if set */
@@ -379,6 +535,12 @@ cscope: Could not create private temp dir %s\n",
     /* ditto the TERM signal */
     signal(SIGTERM, myexit);
 
+    /* ignore PIPE signal, so myexit() will have a chance to clean up in
+     * linemode, while in curses mode the "|" command can cause a pipe signal
+     * too
+     */
+    signal(SIGPIPE, SIG_IGN);
+
     /* if the database path is relative and it can't be created */
     if (reffile[0] != '/' && access(".", WRITE) != 0) {
 
@@ -400,7 +562,6 @@ cscope: Could not create private temp dir %s\n",
 
     if (linemode == NO) {
 	signal(SIGINT, SIG_IGN);	/* ignore interrupts */
-	signal(SIGPIPE, SIG_IGN);/* | command can cause pipe signal */
 
 #if defined(KEY_RESIZE) && !defined(__DJGPP__)
 	winch_action.sa_sigaction = sigwinch_handler;
@@ -453,7 +614,7 @@ cscope: Could not create private temp dir %s\n",
 		    ungetc(c, oldrefs);
 		    break;
 		}
-		switch (c = getc(oldrefs)) {
+		switch (getc(oldrefs)) {
 		case 'c':	/* ASCII characters only */
 		    compress = NO;
 		    break;
@@ -481,7 +642,7 @@ cscope: cannot read source file size from file %s\n", reffile);
 	    /* NOTREACHED */
 	}
 	/* get the source file list */
-	srcfiles = mymalloc(nsrcfiles * sizeof(char *));
+	srcfiles = mymalloc(nsrcfiles * sizeof(*srcfiles));
 	if (fileversion >= 9) {
 
 	    /* allocate the string space */
@@ -553,7 +714,7 @@ cscope: cannot read source file name from file %s\n",
 	    sourcedir(s);
 	}
 	/* make the source file list */
-	srcfiles = mymalloc(msrcfiles * sizeof(char *));
+	srcfiles = mymalloc(msrcfiles * sizeof(*srcfiles));
 	makefilelist();
 	if (nsrcfiles == 0) {
 	    postfatal("cscope: no source files found\n");
@@ -566,7 +727,11 @@ cscope: cannot read source file name from file %s\n",
 	/* add /usr/include to the #include directory list,
 	   but not in kernelmode... kernels tend not to use it. */
 	if (kernelmode == NO) {
-	    includedir(DFLT_INCDIR);
+	    if (NULL != (s = getenv("INCDIR"))) {
+		includedir(s);
+	    } else {
+		includedir(DFLT_INCDIR);
+	    }
 	}
 
 	/* initialize the C keyword table */
@@ -705,8 +870,16 @@ cscope: cannot read source file name from file %s\n",
 	    atfield();	/* move to the input field */
 
 	/* exit if the quit command is entered */
-	if ((c = mygetch()) == EOF || c == ctrl('D') || c == ctrl('Z')) {
+	if ((c = mygetch()) == EOF || c == ctrl('D')) {
 	    break;
+	}
+	if (c == ctrl('Z')) {
+#ifdef SIGTSTP
+	    kill(0, SIGTSTP);
+	    continue;
+#else
+	    break;
+#endif
 	}
 	/* execute the commmand, updating the display if necessary */
 	if (command(c) == YES) {
@@ -815,6 +988,14 @@ exitcurses(void)
 	fflush(stdout);
 }
 
+/* error exit including short usage information */
+static void
+error_usage(void)
+{
+	usage();
+	fprintf(stderr, "Try the -h option for more information.\n");
+	myexit(1);
+}
 
 /* normal usage message */
 static void
@@ -897,6 +1078,12 @@ myexit(int sig)
 	freesrclist();
 	freecrossref();
 	free_newbuildfiles();
+
+	if( remove_symfile_onexit == YES ) {
+		unlink( reffile );
+		unlink( invname );
+		unlink( invpost );
+	}
 
 	exit(sig);
 }
