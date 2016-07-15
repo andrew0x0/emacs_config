@@ -12,7 +12,7 @@
 (require 'filecache)
 (add-to-list 'file-cache-filter-regexps "\\.git\\>")
 (add-to-list 'file-cache-filter-regexps "\\.svn-base$")
-(file-cache-add-directory-recursively "D:/project")
+(file-cache-add-directory-recursively "~/project")
 
 ;;(require 'ido)
 (ido-mode t)
@@ -24,4 +24,5 @@
 ;; set ido buffer
 (setq ido-save-directory-list-file "~/.emacs.d/_ido_last")
 
-(setq default-directory "d:/project/")
+
+(setq default-directory "~/velio")

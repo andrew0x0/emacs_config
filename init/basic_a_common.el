@@ -95,43 +95,14 @@
 
 ;;enable revert-buffer reload files when files on disk is changed
 (global-set-key [f5] (lambda() (interactive) (revert-buffer t t)))
-
-(make-variable-buffer-local 'wcy-shell-mode-directory-changed)
-(setq wcy-shell-mode-directory-changed t)
-
-(defun wcy-shell-mode-auto-rename-buffer-output-filter (text)
-  (if (and (eq major-mode 'shell-mode)
-           wcy-shell-mode-directory-changed)
-      (progn
-        (let ((bn  (concat "sh:" default-directory)))
-          (if (not (string= (buffer-name) bn))
-              (rename-buffer bn t)))
-        (setq wcy-shell-mode-directory-changed nil))))
-
-
-(defun wcy-shell-mode-auto-rename-buffer-input-filter (text)
-  (if (eq major-mode 'shell-mode)
-      (if ( string-match "^[ \t]*cd *" text)
-          (setq wcy-shell-mode-directory-changed t))))
-(add-hook 'comint-output-filter-functions 'wcy-shell-mode-auto-rename-buffer-output-filter)
-(add-hook 'comint-input-filter-functions 'wcy-shell-mode-auto-rename-buffer-input-filter )
-
-(add-hook 'shell-mode-hook 'wcy-shell-mode-hook-func)
-(defun wcy-shell-mode-hook-func  ()
-  (set-process-sentinel (get-buffer-process (current-buffer))
-                            #'wcy-shell-mode-kill-buffer-on-exit)
-      )
-(defun wcy-shell-mode-kill-buffer-on-exit (process state)
-  (message "%s" state)
-  (if (or
-       (string-match "exited abnormally with code.*" state)
-       (string-match "finished" state))
-      (kill-buffer (current-buffer))))
       
 ;;Close all buffers
 (defun close-all-buffers()
   (interactive)
   (mapc 'kill-buffer (buffer-list)))
 (global-set-key [M-f6] 'close-all-buffers)
+
+(define-key global-map "\C-x \C-h" 'help-command)
+(define-key global-map "\C-h" 'backward-char)
 
 (server-start)

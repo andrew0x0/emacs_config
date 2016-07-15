@@ -1,0 +1,1 @@
+(mapc 'load (directory-files "D:/Program Files/GNU/customization/init" t "\\.el$"))
