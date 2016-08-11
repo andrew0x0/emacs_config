@@ -8,8 +8,7 @@
 (set 'yes-or-no-p 'y-or-n-p)
 
 ;;clear temp file
-;;(setq-default make-backup-files nil)
-
+(setq-default make-backup-files nil)
 
 ;;放大缩小字体
 (defun increase-font-size ()

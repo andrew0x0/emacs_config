@@ -1,0 +1,12 @@
+* but now i am study org
+* setup pc site ssl
+** get openssl client code and modify
+   DONE
+** setup nginx+openssl server
+   DONE
+** test with choosed cihped
+   DONE TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+** study openssl
+   learn details about tls protocol handshake
+   http://www.jianshu.com/p/042dc1ba6815
+* study arm ssl
