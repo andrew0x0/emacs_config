@@ -1,3 +1,7 @@
+;;set gdb using arm-none-linux-gdb
+(defvar gud-gdb-command-name "arm-none-eabi-gdb")
+(setq gud-gdb-command-name "arm-none-eabi-gdb  --annotate=3 -i=mi -x /home/andrew/velio/gdbscript ")
+
 ;; close error bell
 (setq visible-bell t)
 
@@ -92,8 +96,18 @@
 (define-key global-map  "\C-cl" 'copy-line)
 (define-key global-map  "\C-cw" 'copy-word)
 
+
+(defun revert-all-buffers()
+  (interactive)
+  (dolist (buf(buffer-list))
+    (with-current-buffer buf
+			 (when(and ( buffer-file-name) (file-exists-p (buffer-file-name)) (not (buffer-modified-p)))
+			   ( revert-buffer t t t) )))
+  (message "Refreshed open files"))
+
 ;;enable revert-buffer reload files when files on disk is changed
 (global-set-key [f5] (lambda() (interactive) (revert-buffer t t)))
+(global-set-key [M-f5] 'revert-all-buffers)
       
 ;;Close all buffers
 (defun close-all-buffers()
@@ -103,5 +117,10 @@
 
 (define-key global-map "\C-x \C-h" 'help-command)
 (define-key global-map "\C-h" 'backward-char)
+
+(add-hook 'comint-output-filter-functions
+'comint-watch-for-password-prompt)
+
+
 
 (server-start)

@@ -94,3 +94,5 @@ If set/leave chinese-font-size to nil, it will follow english-font-size"
 
 ;;mark copy block
 (transient-mark-mode t)
+
+(add-hook 'org-mode-hook (lambda () (setq truncate-lines nil)))

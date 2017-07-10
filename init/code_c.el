@@ -3,9 +3,9 @@
   (interactive)
   (make-local-variable 'skeleton-pair-alist)
   (setq skeleton-pair-alist  '(
-    (?` ?` _ "''")
-    (?\( ?  _ " )")
-    (?\[ ?  _ " ]")
+    (?`?` _ "''")
+    (?\(?  _ ")")
+    (?\[?  _ "]")
     (?{ \n > _ \n ?} >)))
   (setq skeleton-pair t)
   (local-set-key (kbd "(") 'skeleton-pair-insert-maybe)
@@ -17,10 +17,14 @@
 (defun my-c-mode-hook ()
   (require 'cc-mode)
   (interactive)
-  (c-set-style "bsd")
+  (c-set-style "k&r")
   (setq indent-tabs-mode nil)
-  (setq default-tab-width 8)
-  (setq c-basic-offset 8)   
+  (setq default-tab-width 4)
+  (setq c-basic-offset 4)   
+;;  (c-set-style "bsd")
+;;  (setq indent-tabs-mode nil)
+;;  (setq default-tab-width 8)
+;;  (setq c-basic-offset 8)   
   (setq tab-stop-list ())
   (setq c-cleanup-list (append c-cleanup-list (list 'brace-else-brace)))
   (c-toggle-auto-state 1) ;;不用自动换行/1表示自动换行
@@ -116,3 +120,25 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
 ;;      `smart-tabs-insinuate'.
 
 ;;; Code:
+
+(add-to-list 'load-path
+              "~/customization/lisps/yasnippet")
+(require 'yasnippet)
+(yas-global-mode 1)
+
+(defun yasnippet-current-line ();; C-c TAB
+  (interactive)
+  (let ((current-line (string-trim-right (thing-at-point 'line t))))
+    (end-of-line)
+    (newline-and-indent)
+    (yas-expand-snippet (yasnippet-string-to-template (string-trim current-line)))))
+
+(defun yasnippet-string-to-template (string)
+  (let ((count 1))
+    (labels ((rep (text)
+                  (let ((replace (format "${%d:%s}" count text)))
+                    (incf count)
+                    replace)))
+      (replace-regexp-in-string "[a-zA-Z0-9]+" #'rep string))))
+      
+(global-set-key (kbd "C-c TAB") 'yasnippet-current-line)
