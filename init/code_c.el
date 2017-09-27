@@ -142,3 +142,38 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
       (replace-regexp-in-string "[a-zA-Z0-9]+" #'rep string))))
       
 (global-set-key (kbd "C-c TAB") 'yasnippet-current-line)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+;; Highlight  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+;; highlight symbol  
+(add-to-list 'load-path
+              "~/customization/lisps/highlight-symbol")
+(require 'highlight-symbol)
+(global-set-key [(control f3)] 'highlight-symbol)
+(global-set-key [f3] 'highlight-symbol-next)
+(global-set-key [(shift f3)] 'highlight-symbol-prev)
+(global-set-key [(meta f3)] 'highlight-symbol-query-replace)
+
+(add-to-list 'load-path
+              "~/customization/lisps/symbol-overlay")
+(add-to-list 'load-path
+              "~/customization/lisps/seq.el/")
+(require 'symbol-overlay)
+(global-set-key (kbd "M-i") 'symbol-overlay-put)
+(global-set-key (kbd "M-n") 'symbol-overlay-switch-forward)
+(global-set-key (kbd "M-p") 'symbol-overlay-switch-backward)
+(global-set-key (kbd "<f7>") 'symbol-overlay-mode)
+(global-set-key (kbd "<f8>") 'symbol-overlay-remove-all)
+
+;;Default key-bindings defined in symbol-overlay-map:
+;;"i" -> symbol-overlay-put
+;;"n" -> symbol-overlay-jump-next
+;;"p" -> symbol-overlay-jump-prev
+;;"w" -> symbol-overlay-save-symbol
+;;"t" -> symbol-overlay-toggle-in-scope
+;;"e" -> symbol-overlay-echo-mark
+;;"d" -> symbol-overlay-jump-to-definition
+;;"s" -> symbol-overlay-isearch-literally
+;;"q" -> symbol-overlay-query-replace
+;;"r" -> symbol-overlay-rename
