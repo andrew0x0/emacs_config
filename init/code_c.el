@@ -148,7 +148,7 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;; highlight symbol  
 (add-to-list 'load-path
-              "~/customization/lisps/highlight-symbol")
+              "~/customization/lisps/highlight-symbol.el")
 (require 'highlight-symbol)
 (global-set-key [(control f3)] 'highlight-symbol)
 (global-set-key [f3] 'highlight-symbol-next)
