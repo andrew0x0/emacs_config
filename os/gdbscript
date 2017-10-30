@@ -1,0 +1,2 @@
+file ~/velio/vdm2-firmware/build/ulu_vdm2_firmware.out
+target remote :3333
