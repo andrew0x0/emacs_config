@@ -13,6 +13,7 @@
 
 ;;clear temp file
 (setq-default make-backup-files nil)
+(setq make-backup-files nil)
 
 ;;放大缩小字体
 (defun increase-font-size ()

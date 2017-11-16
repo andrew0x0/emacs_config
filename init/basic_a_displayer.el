@@ -1,6 +1,8 @@
 ;;show line num
 (setq column-number-mode t)
 (setq line-number-mode t)
+(global-linum-mode t)
+(setq linum-format "%3d")
 
 ;;show time and date
 (setq display-time-24hr-forma t)
