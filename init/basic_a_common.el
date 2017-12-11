@@ -116,9 +116,6 @@
   (mapc 'kill-buffer (buffer-list)))
 (global-set-key [M-f6] 'close-all-buffers)
 
-(define-key global-map "\C-x \C-h" 'help-command)
-(define-key global-map "\C-h" 'backward-char)
-
 (add-hook 'comint-output-filter-functions
 'comint-watch-for-password-prompt)
 
