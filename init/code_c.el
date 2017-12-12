@@ -191,4 +191,5 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
             (company-complete-common)
           (indent-for-tab-command)))))
 
+(add-hook 'shell-mode-hook #'(company-mode 0))
 (global-set-key [backtab] 'tab-indent-or-complete)
