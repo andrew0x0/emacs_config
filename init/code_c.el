@@ -193,3 +193,42 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
 
 (add-hook 'shell-mode-hook #'(company-mode 0))
 (global-set-key [backtab] 'tab-indent-or-complete)
+
+(global-set-key (kbd "C-x g") 'goto-line)
+
+(defun my_make_path (path n)
+  (let ((i 0)
+		(ret "")
+		)
+    (while (< i n)
+      (setq ret (format "%s/%s" ret (nth i path)))
+      (setq i (+ i 1))
+      )
+    (format "%s/" ret)
+    )
+  )
+
+(defun my_find-cscope-files ()
+  (let* ((pre "")
+		 (bfind nil)
+		 (path (split-string (expand-file-name default-directory) "/"))
+		 (i (- (length path) 1))
+		 (cwd "")
+		 )
+    (while (>= i 0)
+      (setq cwd (my_make_path path i))
+      (if (file-exists-p (format "%scscope.files" cwd))
+		  (progn (setq i (- i 1000))
+				 (setq bfind t)
+				 (message "find pre = %s" cwd)
+				 )
+		)
+      (setq i (- i 1)))
+     (if bfind
+	 cwd
+       "")
+     )
+  )
+
+(global-set-key (kbd "C-x t") '(lambda () (interactive)
+                            (counsel-ag (thing-at-point 'symbol) (my_find-cscope-files) "--cpp" nil)))
