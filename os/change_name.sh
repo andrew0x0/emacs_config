@@ -34,12 +34,10 @@ do
         if [ "$file_type" != "" ]; then 
             temp=`echo $file_name 2> /dev/null | grep $keyword` 
             #echo "--"$cur_dir/$file_name #临时显示，调试用 
-            if [ "$temp" != "" ]; then 
-                echo $cur_dir/$file_name 
-				file_name_changed=$cur_dir/$(echo $file_name | sed  "s/$keyword/modem/g")
-				echo $file_name_changed
-				mv $cur_dir/$file_name $file_name_changed 
-                #文件个数加1 
+            if [ "$temp" != "" ]; then
+				echo $cur_dir/$file_name  
+				mv $cur_dir/$file_name  $cur_dir/$(echo $file_name | sed  "s/$keyword/modem/g")
+				#文件个数加1 
                 let file_count++ 
             fi 
         fi 
