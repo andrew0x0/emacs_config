@@ -16,6 +16,7 @@
 
 (defun my-c-mode-hook ()
   (require 'cc-mode)
+  (hs-minor-mode t)
   (interactive)
   (c-set-style "k&r")
   (setq indent-tabs-mode nil)
@@ -27,12 +28,14 @@
 ;;  (setq c-basic-offset 8)   
   (setq tab-stop-list ())
   (setq c-cleanup-list (append c-cleanup-list (list 'brace-else-brace)))
-  (c-toggle-auto-state 1) ;;不用自动换行/1表示自动换行
-  (c-toggle-hungry-state)  ;; 此模式下，当按Backspace时会删除最多的空格
-  (define-key c-mode-map [return] 'newline-and-indent) ;; 将回车代替C-j的功能，换行的同时对齐
+  (c-toggle-auto-state 1) ;;虏禄脫脙脳脭露炉禄禄脨脨/1卤铆脢戮脳脭露炉禄禄脨脨
+  (c-toggle-hungry-state)  ;; 麓脣脛拢脢陆脧脗拢卢碌卤掳麓Backspace脢卤禄谩脡戮鲁媒脳卯露脿碌脛驴脮赂帽
+  (define-key c-mode-map [return] 'newline-and-indent) ;; 陆芦禄脴鲁碌麓煤脤忙C-j碌脛鹿娄脛脺拢卢禄禄脨脨碌脛脥卢脢卤露脭脝毛
 )
 
 (add-hook 'c-mode-hook 'my-c-mode-hook)
+(global-set-key [f1] 'hs-toggle-hiding)
+
 
 ;;for c code systel
 ;;show paren mode
@@ -121,28 +124,6 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
 
 ;;; Code:
 
-(add-to-list 'load-path
-              "~/customization/lisps/yasnippet")
-(require 'yasnippet)
-(yas-global-mode 1)
-
-(defun yasnippet-current-line ();; C-c TAB
-  (interactive)
-  (let ((current-line (string-trim-right (thing-at-point 'line t))))
-    (end-of-line)
-    (newline-and-indent)
-    (yas-expand-snippet (yasnippet-string-to-template (string-trim current-line)))))
-
-(defun yasnippet-string-to-template (string)
-  (let ((count 1))
-    (labels ((rep (text)
-                  (let ((replace (format "${%d:%s}" count text)))
-                    (incf count)
-                    replace)))
-      (replace-regexp-in-string "[a-zA-Z0-9]+" #'rep string))))
-      
-(global-set-key (kbd "C-c TAB") 'yasnippet-current-line)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
 ;; Highlight  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
@@ -150,10 +131,16 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
 (add-to-list 'load-path
               "~/customization/lisps/highlight-symbol.el")
 (require 'highlight-symbol)
-(global-set-key [(control f3)] 'highlight-symbol)
-(global-set-key [f3] 'highlight-symbol-next)
-(global-set-key [(shift f3)] 'highlight-symbol-prev)
-(global-set-key [(meta f3)] 'highlight-symbol-query-replace)
+(global-set-key [(control f2)] 'highlight-symbol)
+(global-set-key [f2] 'highlight-symbol-next)
+(global-set-key [(shift f2)] 'highlight-symbol-prev)
+(global-set-key [(meta f2)] 'highlight-symbol-query-replace)
+(global-set-key [f7] 'highlight-symbol-at-point)
+(global-set-key [f8] 'highlight-symbol-remove-all)
+(global-set-key [(shift f7)] 'highlight-symbol-prev)
+(global-set-key [(shift f8)] 'highlight-symbol-next)
+(global-set-key [(meta f7)] 'highlight-symbol-prev-in-defun)
+(global-set-key [(meta f8)] 'highlight-symbol-next-in-defun)
 
 (add-to-list 'load-path
               "~/customization/lisps/symbol-overlay")

@@ -1,10 +1,10 @@
 ;;; ede-gnustep.el --- EDE GNUstep Project file driver
 
-;;;  Copyright (C) 2008,2009  Marco Bardelli
+;;;  Copyright (C) 2008,2009,2010,2012  Marco Bardelli
 
 ;; Author: Marco (Bj) Bardelli <bardelli.marco@gmail.com>
 ;; Keywords: project, make, gnustep, gnustep-make
-;; RCS: $Id: ede-gnustep.el,v 1.11 2010/01/09 23:05:05 safanaj Exp $
+;; RCS: $Id: ede-gnustep.el,v 1.13 2010-06-12 00:44:16 zappo Exp $
 
 ;; This software is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -72,12 +72,12 @@
 
 (eval-and-compile 
   (require 'ede)
-  (require 'ede-proj)
-  (require 'makefile-edit)
+  (require 'ede/proj)
+  (require 'semantic/edit)
   ;; to easy parsing of GNUmakefiles
   (require 'semantic)
-  (require 'semantic-find)
-  (require 'semantic-tag-file)
+  (require 'semantic/find)
+  (require 'semantic/tag-file)
   )
 
 (unless (fboundp 'string-file-contents)
@@ -172,7 +172,7 @@ Include some dir via the -I preprocessor flag, for this target.")
 	      :custom (repeat (string :tag "File"))
 	      :label "Auxiliary Source Files"
 	      :group (default source)
-	      :documentation "Auxilliary source files included in this target.
+	      :documentation "Auxiliary source files included in this target.
 Each of these is considered equivalent to a source file, but it is not
 distributed, and each should have a corresponding rule to build it.")
    (dirty :initform nil
@@ -182,8 +182,8 @@ distributed, and each should have a corresponding rule to build it.")
 "Abstract class for ede-step targets.")
 
 (defclass ede-step-target-ctool (ede-step-target)
-  ((sourcetype :initform (ede-source-gnustep-c
-			  ede-source-header-gnustep-c))
+  ((sourcetype :initform '(ede-source-gnustep-c
+			   ede-source-header-gnustep-c))
    (type :initform 'ctool)
    (cflags :initarg :cflags
 	   :initform nil
@@ -198,10 +198,10 @@ distributed, and each should have a corresponding rule to build it.")
   "Class for CTool targets.")
 
 (defclass ede-step-target-tool (ede-step-target)
-  ((sourcetype :initform (ede-source-gnustep-objc
-			  ede-source-gnustep-c
-			  ede-source-header-gnustep-c
-			  ede-source-header-gnustep-objc))
+  ((sourcetype :initform '(ede-source-gnustep-objc
+			   ede-source-gnustep-c
+			   ede-source-header-gnustep-c
+			   ede-source-header-gnustep-objc))
    (type :initform 'tool)
    (cflags :initarg :cflags
 	   :initform nil
@@ -217,8 +217,8 @@ distributed, and each should have a corresponding rule to build it.")
 
 ;; FIX XXX :  _LIBS_DEPEND
 (defclass ede-step-target-clibrary (ede-step-target)
-  ((sourcetype :initform (ede-source-gnustep-c
-			  ede-source-header-gnustep-c))
+  ((sourcetype :initform '(ede-source-gnustep-c
+			   ede-source-header-gnustep-c))
    (type :initform 'clibrary)
 ;;;    (header-install-dir :initarg :header-install-dir
 ;;; 		       :initform ""
@@ -239,10 +239,10 @@ distributed, and each should have a corresponding rule to build it.")
   "Class for CLib targets.")
 
 (defclass ede-step-target-library (ede-step-target)
-  ((sourcetype :initform (ede-source-gnustep-objc
-			  ede-source-gnustep-c
-			  ede-source-header-gnustep-objc
-			  ede-source-header-gnustep-c))
+  ((sourcetype :initform '(ede-source-gnustep-objc
+			   ede-source-gnustep-c
+			   ede-source-header-gnustep-objc
+			   ede-source-header-gnustep-c))
    (type :initform 'library)
 ;;;    (header-install-dir :initarg :header-install-dir
 ;;; 		       :initform ""
@@ -263,10 +263,10 @@ distributed, and each should have a corresponding rule to build it.")
   "Class for Lib targets.")
 
 (defclass ede-step-target-application (ede-step-target)
-  ((sourcetype :initform (ede-source-gnustep-objc
-			  ede-source-gnustep-c
-			  ede-source-header-gnustep-objc
-			  ede-source-header-gnustep-c))
+  ((sourcetype :initform '(ede-source-gnustep-objc
+			   ede-source-gnustep-c
+			   ede-source-header-gnustep-objc
+			   ede-source-header-gnustep-c))
    (type :initform 'application)
    (cflags :initarg :cflags
 	   :initform nil
@@ -281,7 +281,7 @@ distributed, and each should have a corresponding rule to build it.")
   "Class for App targets.")
 
 (defclass ede-step-target-documentation (ede-step-target)
-  ((sourcetype :initform (ede-source-gnustep-texi))
+  ((sourcetype :initform '(ede-source-gnustep-texi))
    (type :initform 'documentation))
   "Class for Doc targets.")
 
@@ -393,20 +393,20 @@ The variable GNUSTEP_INSTALLATION_DOMAIN is set at this value.")
 	     :type (or null list)
 	     :custom (repeat (string :tag "Makefile"))
 	     :group make
-	     :documentation "The auxilliary makefile for additional variables.
+	     :documentation "The auxiliary makefile for additional variables.
 Included just before the specific target files.")
    (included-makefiles :initarg :included-makefiles
 		       :type (or null list)
 		       :custom (repeat (string :tag "Makefile"))
 		       :group make
-		       :documentation "The auxilliary makefile for targets rules.
+		       :documentation "The auxiliary makefile for targets rules.
 Included common and specific target files.")
    (postamble :initarg :postamble
 	     :initform '("GNUmakefile.postamble")
 	     :type (or null list)
 	     :custom (repeat (string :tag "Makefile"))
 	     :group make
-	     :documentation "The auxilliary makefile for additional rules.
+	     :documentation "The auxiliary makefile for additional rules.
 Included just after the specific target files.")
 
    (metasubproject
@@ -944,8 +944,8 @@ Argument COMMAND is the command to use for compiling the target."
 ;;; Target type specific autogenerating gobbldegook.
 ;; I would implement the ede-proj interface.
 (eval-when-compile
-  (require 'ede-pmake "ede-pmake.el")
-  (require 'ede-pconf "ede-pconf.el"))
+  (require 'ede/pmake)
+  (require 'ede/pconf))
 
 (defmethod ede-proj-dist-makefile ((this ede-step-project))
   "Return the name of the Makefile with the DIST target in it for THIS."
@@ -963,7 +963,7 @@ Argument COMMAND is the command to use for compiling the target."
   "Create a Makefile for all Makefile targets in THIS if needed.
 MFILENAME is the makefile to generate."
   ;; For now, pass through until dirty is implemented.
-  (require 'ede-pmake)
+  (require 'ede/pmake)
   (if (or (not (file-exists-p mfilename))
 	  (file-newer-than-file-p (oref this file) mfilename))
       (ede-proj-makefile-create this mfilename)))
@@ -975,7 +975,7 @@ Handles the Makefile, or a Makefile.am configure.in combination.
 Optional argument FORCE will force items to be regenerated."
   (if (not force)
       (ede-proj-makefile-create-maybe this (ede-proj-dist-makefile this))
-;    (require 'ede-pmake)
+;    (require 'ede/pmake)
     (ede-proj-makefile-create this (ede-proj-dist-makefile this)))
   ;; Rebuild all subprojects
   (ede-map-subprojects
@@ -1254,35 +1254,32 @@ Check match of a line for validity."
 
 ;;;###autoload
 ;; @todo - below is not compatible w/ Emacs 20!
-(add-to-list 'ede-project-class-files
-	     (ede-project-autoload "edegnustep"
-	      :name "GNUstep-Make" :file 'ede-gnustep
-	      :proj-file "ProjStep.ede"
-	      :load-type 'ede-step-load
-	      :class-sym 'ede-step-project)
-	     t)
+(ede-add-project-autoload
+ (ede-project-autoload "edegnustep"
+		       :name "GNUstep-Make" :file 'ede-gnustep
+		       :proj-file "ProjStep.ede"
+		       :load-type 'ede-step-load
+		       :class-sym 'ede-step-project))
 
 ;;;###autoload
 ;; ;; @todo - below is not compatible w/ Emacs 20! ede-project-class-files
-(add-to-list 'ede-project-class-files
-	     (ede-project-autoload "gnustep-root"
-	      :name "GNUstep-make Top Most" :file 'ede-gnustep
-	      :proj-file "RootProjStep.ede"
-	      :initializers '(:project-mode scanner)
-	      :load-type 'ede-gnustep-load
-	      :class-sym 'ede-step-project)
-	     t)
+(ede-add-project-autoload
+ (ede-project-autoload "gnustep-root"
+		       :name "GNUstep-make Top Most" :file 'ede-gnustep
+		       :proj-file "RootProjStep.ede"
+		       :initializers '(:project-mode scanner)
+		       :load-type 'ede-gnustep-load
+		       :class-sym 'ede-step-project))
 
 ;;;###autoload
 ;; @todo - below is not compatible w/ Emacs 20!
-(add-to-list 'ede-project-class-files
-	     (ede-project-autoload "gnustep"
-	      :name "GNUstep-Make in scanner mode" :file 'ede-gnustep
-	      :proj-file "ProjStep.ede"
-	      :initializers '(:project-mode scanner)
-	      :load-type 'ede-gnustep-load
-	      :class-sym 'ede-step-project)
-	     t)
+(ede-add-project-autoload
+ (ede-project-autoload "gnustep"
+		       :name "GNUstep-Make in scanner mode" :file 'ede-gnustep
+		       :proj-file "ProjStep.ede"
+		       :initializers '(:project-mode scanner)
+		       :load-type 'ede-gnustep-load
+		       :class-sym 'ede-step-project))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\(Root\\)?ProjStep\\.ede" . emacs-lisp-mode))
@@ -1292,7 +1289,7 @@ Check match of a line for validity."
 
 (provide 'ede-gnustep)
 
-;;; ede-proj.el ends here
+;;; ede/proj.el ends here
 
 
 

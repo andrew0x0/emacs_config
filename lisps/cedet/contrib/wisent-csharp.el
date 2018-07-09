@@ -1,9 +1,9 @@
 ;;; wisent-csharp.el --- LALR grammar for C#
 ;;
+;; Some Changes Copyright (C) 2006, 2010 Eric M. Ludlam
 ;; Copyright (C) 2003, 2007 David Shilvock
-;; Some Changes Copyright (C) 2006 Eric M. Ludlam
 
-;; Time-stamp: <2003-12-08 19:11:48 dave>
+;; Time-stamp: <2010-09-15 16:21:00 (lluis)>
 ;;
 ;; Author: David Shilvock <davels@telus.net>
 ;; Maintainer: David Shilvock <davels@telus.net>
@@ -31,13 +31,13 @@
 ;;
 ;; This file contains the csharp parser created from the grammar
 ;; specified in wisent-csharp.wy file.  It also has some support code.
-;; A bunch of this is ripped from wisent-java-tags.el (David Ponce)
+;; A bunch of this is ripped from semantic/wisent/java-tags.el (David Ponce)
 ;;
 ;;; Code:
 
-(require 'semantic-wisent)
-(require 'semantic-format)
-(require 'semantic-ctxt)
+(require 'semantic/wisent)
+(require 'semantic/format)
+(require 'semantic/ctxt)
 (require 'wisent-csharp-wy)
 
 
@@ -250,7 +250,7 @@ This function overrides `get-local-variables'."
 
 (define-lex-regex-analyzer wisent-csharp-lex-ignore-region
   "Ignore # type macros for C sharp."
-  "^\\s-*#region\\>"
+  "\\s-*#region\\>"
   (goto-char (match-end 0))
   (forward-word 1)
   (setq semantic-lex-end-point (point))
@@ -258,7 +258,7 @@ This function overrides `get-local-variables'."
 
 (define-lex-regex-analyzer wisent-csharp-lex-ignore-endregion
   "Ignore # type macros for C sharp."
-  "^\\s-*#endregion\\>"
+  "\\s-*#endregion\\>"
   (setq semantic-lex-end-point (match-end 0))
   nil)
 

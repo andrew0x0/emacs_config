@@ -16,11 +16,11 @@
 ;;set display
 ;;color-theme
 ;;add load-path
-;;(add-to-list 'load-path "~/el/color-theme")
+(add-to-list 'load-path "./../lisps/color-theme/themes/")
 (require 'color-theme)
 (color-theme-initialize)
 (color-theme-xp)
-;;(color-theme-matrix)
+;;(color-theme-classic)
 
 ;;disable tool bar
 (setq tool-bar-map (make-sparse-keymap))
@@ -34,7 +34,7 @@
 
 ;;set type
 (setq default-fill-column 85)
-(setq truncate-partial-width-windows nil);¿ª¹Ø×Ô¶¯ÕÛĞĞ(Warp)
+(setq truncate-partial-width-windows nil);Â¿ÂªÂ¹Ã˜Ã—Ã”Â¶Â¯Ã•Ã›ÃÃ(Warp)
 
 ;;set screen size
 (setq default-frame-alist '((top . 20) (left . 20) (width . 100) (height . 30)))
@@ -43,7 +43,7 @@
   (if (null (x-list-fonts font))
       nil
     t))
-(defvar font-list '("Microsoft Yahei" "ÎÄÈªæäµÈ¿íÎ¢Ã×ºÚ" "ºÚÌå" "ĞÂËÎÌå" "ËÎÌå"))
+(defvar font-list '("Microsoft Yahei" "ÃÃ„ÃˆÂªÃ¦Ã¤ÂµÃˆÂ¿Ã­ÃÂ¢ÃƒÃ—ÂºÃš" "ÂºÃšÃŒÃ¥" "ÃÃ‚Ã‹ÃÃŒÃ¥" "Ã‹ÃÃŒÃ¥"))
 
 (require 'cl) ;; find-if is in common list package
 (find-if #'qiang-font-existsp font-list)
@@ -88,7 +88,7 @@ If set/leave chinese-font-size to nil, it will follow english-font-size"
 
 (qiang-set-font
  '("Liberation Sans Regular" "Consolas" "Monaco" "DejaVu Sans Mono" "Courier New") ":pixelsize=22"
- '("Microsoft Yahei" "ÎÄÈªæäµÈ¿íÎ¢Ã×ºÚ" "ºÚÌå" "ĞÂËÎÌå" "ËÎÌå"))
+ '("Microsoft Yahei" "ÃÃ„ÃˆÂªÃ¦Ã¤ÂµÃˆÂ¿Ã­ÃÂ¢ÃƒÃ—ÂºÃš" "ÂºÃšÃŒÃ¥" "ÃÃ‚Ã‹ÃÃŒÃ¥" "Ã‹ÃÃŒÃ¥"))
 
 
 (put 'upcase-region 'disabled nil)
@@ -98,3 +98,9 @@ If set/leave chinese-font-size to nil, it will follow english-font-size"
 (transient-mark-mode t)
 
 (add-hook 'org-mode-hook (lambda () (setq truncate-lines nil)))
+
+;;jump windows by M-number
+(add-to-list 'load-path "./../lisps/window-numbering/")
+(require 'window-numbering)
+(window-numbering-mode 1)
+

@@ -1,6 +1,6 @@
 ;;set gdb using arm-none-linux-gdb
-(defvar gud-gdb-command-name "arm-none-eabi-gdb")
-(setq gud-gdb-command-name "arm-none-eabi-gdb  --annotate=3 -i=mi -x /home/andrew/velio/gdbscript ")
+;;(defvar gud-gdb-command-name "arm-none-eabi-gdb")
+;;(setq gud-gdb-command-name "arm-none-eabi-gdb  --annotate=3 -i=mi -x /home/andrew/velio/gdbscript ")
 
 ;; close error bell
 (setq visible-bell t)
