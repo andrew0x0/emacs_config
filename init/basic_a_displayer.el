@@ -17,11 +17,11 @@
 ;;color-theme
 ;;add load-path
 (add-to-list 'load-path "./../lisps/color-theme/themes/")
-(require 'color-theme)
-(color-theme-initialize)
-(color-theme-xp)
+;;(require 'color-theme)
+;;(color-theme-initialize)
+;;(color-theme-xp)
 ;;(color-theme-classic)
-
+(load-theme 'spacemacs-dark t)
 ;;disable tool bar
 (setq tool-bar-map (make-sparse-keymap))
 
@@ -30,7 +30,7 @@
 
 
 ;;set color of backgroud
-(set-face-background 'default "azure")
+;;(set-face-background 'default "azure")
 
 ;;set type
 (setq default-fill-column 85)
