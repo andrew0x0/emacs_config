@@ -4,3 +4,6 @@
 [submodule "lisps/symbol-overlay"]
 	path = lisps/symbol-overlay
 	url = https://github.com/wolray/symbol-overlay.git
+[submodule "lisps/ace"]
+	path = lisps/ace
+	url = https://github.com/winterTTr/ace-jump-mode.git
