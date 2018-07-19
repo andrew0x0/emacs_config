@@ -1,9 +1,21 @@
-[submodule "lisps/highlight-symbol.el"]
-	path = lisps/highlight-symbol.el
-	url = https://github.com/nschum/highlight-symbol.el.git
 [submodule "lisps/symbol-overlay"]
 	path = lisps/symbol-overlay
 	url = https://github.com/wolray/symbol-overlay.git
 [submodule "lisps/ace"]
 	path = lisps/ace
 	url = https://github.com/winterTTr/ace-jump-mode.git
+[submodule "lisps/smarttabs"]
+	path = lisps/smarttabs
+	url = https://github.com/jcsalomon/smarttabs.git
+[submodule "lisps/window-numbering"]
+	path = lisps/window-numbering
+	url = https://github.com/nschum/window-numbering.el.git
+[submodule "lisps/seq"]
+	path = lisps/seq
+	url = https://github.com/NicolasPetton/seq.el.git
+[submodule "lisps/highlight-symbol"]
+	path = lisps/highlight-symbol
+	url = https://github.com/nschum/highlight-symbol.el.git
+[submodule "lisps/color-theme/spacemacs-theme"]
+	path = lisps/color-theme/spacemacs-theme
+	url = https://github.com/nashamri/spacemacs-theme.git
