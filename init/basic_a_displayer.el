@@ -16,7 +16,7 @@
 ;;set display
 ;;color-theme
 ;;add load-path
-(add-to-list 'load-path "./../lisps/color-theme/themes/")
+;;(add-to-list 'load-path "./../lisps/color-theme/themes/")
 ;;(require 'color-theme)
 ;;(color-theme-initialize)
 ;;(color-theme-xp)
