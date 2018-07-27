@@ -119,6 +119,6 @@
 (add-hook 'comint-output-filter-functions
 'comint-watch-for-password-prompt)
 
-
-
 (server-start)
+
+ (setq tramp-default-method "ssh")
