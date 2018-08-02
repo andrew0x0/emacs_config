@@ -2,7 +2,7 @@
 ;;(setenv "HOME" "~/")
 
 (defconst my-emacs-path           "~/customization/")
-(defconst my-emacs-my-lisps-path  (concat my-emacs-path "my-lisps/") )
+(defconst my-emacs-my-lisps-path  (concat my-emacs-path "init/") )
 (defconst my-emacs-lisps-path     (concat my-emacs-path "lisps/") )
 (defconst my-emacs-templates-path (concat my-emacs-path "templates/") "Path for templates")
 
