@@ -25,4 +25,4 @@
 (setq ido-save-directory-list-file "~/.emacs.d/_ido_last")
 
 
-;;(setq default-directory "~/velio")
+(setq default-directory "/home/ubuntu/project")
