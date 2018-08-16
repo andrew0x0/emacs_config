@@ -10,7 +10,7 @@
 (display-time)
 
 ;;show buffer name
-(setq frame-title-format "Andrew $%f")
+(setq frame-title-format "Keep moving $%f")
       
 
 ;;set display
