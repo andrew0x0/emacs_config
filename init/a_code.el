@@ -30,7 +30,6 @@
 	anaconda-mode
 	multiple-cursors
 	browse-kill-ring
-	xcscope
 	company
 	flycheck
 	flycheck-irony	
