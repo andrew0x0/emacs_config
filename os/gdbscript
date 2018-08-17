@@ -1,0 +1,2 @@
+file /home/ubuntu/project/mcu_hd/mcu/bootloader/bootloader.bin
+target remote :3333

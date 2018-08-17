@@ -1,0 +1,15 @@
+[user]
+	name = guoyu
+	email = guoyu@chainwis.cn
+[core]
+	pager = 
+	editor = emacs
+[diff]
+	tool = meld
+[merge]
+	tool = meld
+[alias]
+	diffall = git-diffall
+	cmc ="!d="$(date -d "$1")" && shift && GIT_COMMITTER_DATE="$d" git commit --amend --date "$d""
+[cola]
+	spellcheck = false
