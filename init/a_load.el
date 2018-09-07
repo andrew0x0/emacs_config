@@ -32,8 +32,6 @@
 	company-c-headers
 	ace-jump-mode
 	markdown-mode
-	w3m
-	web-mode
 	god-mode
 	hydra
 	company-tern	
