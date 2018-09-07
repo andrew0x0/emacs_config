@@ -26,8 +26,6 @@
 	anaconda-mode
 	multiple-cursors
 	browse-kill-ring
-	yasnippet-snippets	
-	auto-yasnippet
 	company
 	flycheck
 	flycheck-irony	
