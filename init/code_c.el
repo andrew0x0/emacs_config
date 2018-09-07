@@ -20,17 +20,12 @@
   (interactive)
   (c-set-style "k&r")
   (setq indent-tabs-mode nil)
-  (setq default-tab-width 4)
-  (setq c-basic-offset 4)   
-;;  (c-set-style "bsd")
-;;  (setq indent-tabs-mode nil)
-;;  (setq default-tab-width 8)
-;;  (setq c-basic-offset 8)   
+  (setq default-tab-width 8)
+  (setq c-basic-offset 8)   
   (setq tab-stop-list ())
   (setq c-cleanup-list (append c-cleanup-list (list 'brace-else-brace)))
   (c-toggle-auto-state 1) ;;²»ÓÃ×Ô¶¯»»ÐÐ/1±íÊ¾×Ô¶¯»»ÐÐ
   (c-toggle-hungry-state)  ;; ´ËÄ£Ê½ÏÂ£¬µ±°´BackspaceÊ±»áÉ¾³ý×î¶àµÄ¿Õ¸ñ
-  (define-key c-mode-map [return] 'newline-and-indent) ;; ½«»Ø³µ´úÌæC-jµÄ¹¦ÄÜ£¬»»ÐÐµÄÍ¬Ê±¶ÔÆë
 )
 
 (add-hook 'c-mode-hook 'my-c-mode-hook)
@@ -183,11 +178,11 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
   (interactive)
   (if (minibufferp)
       (minibuffer-complete)
-    (if (or (not yas-minor-mode)
-            (null (do-yas-expand)))
         (if (check-expansion)
             (company-complete-common)
-          (indent-for-tab-command)))))
+	    (clang-format-region (line-beginning-position) (line-end-position))
+            ;;(indent-for-tab-command)
+	    )))
 
 (add-hook 'shell-mode-hook #'(company-mode 0))
 (global-set-key [backtab] 'tab-indent-or-complete)
