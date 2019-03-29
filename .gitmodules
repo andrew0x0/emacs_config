@@ -21,4 +21,4 @@
 	url = https://github.com/nashamri/spacemacs-theme.git
 [submodule "lisps/cscope"]
 	path = lisps/cscope
-	url = git@github.com:andrew0x0/cscope.git
+	url = https://github.com/andrew0x0/cscope.git
