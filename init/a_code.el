@@ -16,7 +16,8 @@
   ;;   )
   (setq package-archives
 	'(("gnu" . "http://mirrors.163.com/elpa/gnu/")
-	  ("melpa" . "http://mirrors.163.com/elpa/melpa/")))
+	  ("melpa" . "http://elpa.zilongshanren.com/melpa/")))
+;;	  ("melpa" . "http://mirrors.163.com/elpa/melpa/")))
 ;;      '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
 ;;        ("melpa" . "http://elpa.emacs-china.org/melpa/")))
   (package-initialize))
