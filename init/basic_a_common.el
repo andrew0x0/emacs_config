@@ -113,12 +113,29 @@
 ;;enable revert-buffer reload files when files on disk is changed
 (global-set-key [f5] (lambda() (interactive) (revert-buffer t t)))
 (global-set-key [M-f5] 'revert-all-buffers)
-      
+
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+;; Ensure ibuffer opens with point at the current buffer's entry.
+(defadvice ibuffer
+  (around ibuffer-point-to-most-recent) ()
+  "Open ibuffer with cursor pointed to most recent buffer name."
+  (let ((recent-buffer-name (buffer-name)))
+    ad-do-it
+    (ibuffer-jump-to-buffer recent-buffer-name)))
+(ad-activate 'ibuffer)
+
 ;;Close all buffers
 (defun close-all-buffers()
   (interactive)
   (mapc 'kill-buffer (buffer-list)))
-(global-set-key [M-f6] 'close-all-buffers)
+
+(defun kill-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (mapc 'kill-buffer 
+          (delq (current-buffer) 
+                (remove-if-not 'buffer-file-name (buffer-list)))))
+(global-set-key [M-f3] 'kill-other-buffers)
 
 (add-hook 'comint-output-filter-functions
 'comint-watch-for-password-prompt)
@@ -126,3 +143,18 @@
 (server-start)
 
  (setq tramp-default-method "ssh")
+
+(defun new-shell ()
+  (interactive)
+
+  (let (
+        (currentbuf (get-buffer-window (current-buffer)))
+        (newbuf     (generate-new-buffer-name"*shell*"))
+       )
+
+   (generate-new-buffer newbuf)
+   (set-window-dedicated-p currentbuf nil)
+   (set-window-buffer currentbuf newbuf)
+   (shell newbuf)
+  )
+)

@@ -1,7 +1,7 @@
-;;set XP HOME path
-;;(setenv "HOME" "~/")
+;;set HOME path
+;;(setenv "HOME" "~/project/")
 
-(defconst my-emacs-path           "~/customization/")
+(defconst my-emacs-path           "~/emacs_config/")
 (defconst my-emacs-my-lisps-path  (concat my-emacs-path "init/") )
 (defconst my-emacs-lisps-path     (concat my-emacs-path "lisps/") )
 (defconst my-emacs-templates-path (concat my-emacs-path "templates/") "Path for templates")
@@ -34,7 +34,7 @@
 	markdown-mode
 	god-mode
 	hydra
-	company-tern	
+;;	company-tern	
 	company-irony
 	company-go
 	company-irony-c-headers

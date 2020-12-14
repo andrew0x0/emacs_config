@@ -54,5 +54,5 @@
 
 
 ;; Setting English Font
-(set-face-attribute 'default nil :font "Dejavu Sans Mono 14")
+(set-face-attribute 'default nil :font "Dejavu Sans Mono 22")
 

@@ -38,7 +38,7 @@
 	ace-jump-mode
 	symbol-overlay
 	markdown-mode
-	company-tern	
+;;	company-tern	
 	company-irony
 	company-go
 	company-irony-c-headers
