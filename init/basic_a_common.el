@@ -111,8 +111,8 @@
   (message "Refreshed open files"))
 
 ;;enable revert-buffer reload files when files on disk is changed
-(global-set-key [f5] (lambda() (interactive) (revert-buffer t t)))
-(global-set-key [M-f5] 'revert-all-buffers)
+(global-set-key (kbd "<f5>") (lambda() (interactive) (revert-buffer t t t)))
+(global-set-key (kbd "M-<f5>") 'revert-all-buffers)
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 ;; Ensure ibuffer opens with point at the current buffer's entry.
