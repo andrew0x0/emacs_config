@@ -12,8 +12,10 @@
 (set 'yes-or-no-p 'y-or-n-p)
 
 ;;clear temp file
-(setq-default make-backup-files nil)
 (setq make-backup-files nil)
+(setq-default make-backup-files nil)
+(setq auto-save-default nil)
+(setq create-lockfiles nil)
 
 ;;放大缩小字体
 (defun increase-font-size ()
@@ -35,14 +37,6 @@
 
 ;; 当你在shell、telnet、w3m等模式下时，必然碰到过要输入密码的情况,此时加密显出你的密码
 (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
-
-;; 所有的备份文件转移到~/backups目录下
-(setq backup-directory-alist '(("" . "~/.backup")))
-(setq version-control t)
-(setq kept-old-versions 2)
-(setq kept-new-versions 5)
-(setq delete-old-versions t)
-(setq backup-by-copying t)
 
 ;;set cache for kill
 (setq kill-ring-max 200)
