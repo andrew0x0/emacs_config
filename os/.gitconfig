@@ -1,6 +1,3 @@
-[user]
-	name = yuguo
-	email = yuguo@deeproute.ai
 [core]
 	pager = 
 	editor = emacs
@@ -8,8 +5,24 @@
 	tool = meld
 [merge]
 	tool = meld
+        cmd = meld"$LOCAL""$BASE""$REMOTE" --output"$MERGED"
+	prompt = false
+
 [alias]
-	diffall = git-diffall
+	diffall = /home/yuguo/emacs_config/os/git-diffall.sh
 	cmc ="!d="$(date -d "$1")" && shift && GIT_COMMITTER_DATE="$d" git commit --amend --date "$d""
+	st = status
+	ci = commit
+	l = log --oneline --decorate -12 --color
+	ll = log --oneline --decorate --color
+	lc = log --graph --color
+	co = checkout
+	br = branch
+	rb = rebase
+	dci = dcommit
+	sbi = submodule init
+	sbu = submodule update
+	sbp = submodule foreach git pull
+	sbc = submodule foreach git co master
 [cola]
 	spellcheck = false
