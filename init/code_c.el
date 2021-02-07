@@ -1,4 +1,3 @@
-(add-hook 'c-mode-hook 'hs-minor-mode)
 (defun my-c-mode-auto-pair ()
   (interactive)
   (make-local-variable 'skeleton-pair-alist)
@@ -13,22 +12,50 @@
   (local-set-key (kbd "`") 'skeleton-pair-insert-maybe)
   (local-set-key (kbd "[") 'skeleton-pair-insert-maybe))
 (add-hook 'c-mode-hook 'my-c-mode-auto-pair)
+(add-hook 'c++-mode-hook 'my-c-mode-auto-pair)
+
+;;(defun my-c-mode-hook ()
+;;  (require 'cc-mode)
+;;  (hs-minor-mode t)
+;;  (interactive)
+;;  (c-set-style "k&r")
+;;  (setq indent-tabs-mode nil)
+;;  (setq default-tab-width 8)
+;;  (setq c-basic-offset 8)   
+;;  (setq tab-stop-list ())
+;;  (setq c-cleanup-list (append c-cleanup-list (list 'brace-else-brace)))
+;;  (c-toggle-auto-state 1) ;;²»ÓÃ×Ô¶¯»»ÐÐ/1±íÊ¾×Ô¶¯»»ÐÐ
+;;  (c-toggle-hungry-state)  ;; ´ËÄ£Ê½ÏÂ£¬µ±°´BackspaceÊ±»áÉ¾³ý×î¶àµÄ¿Õ¸ñ
+;;)
 
 (defun my-c-mode-hook ()
-  (require 'cc-mode)
+(require 'cc-mode)
+(require 'google-c-style)
+(defun my-build-tab-stop-list (width)
+  (let ((num-tab-stops (/ 80 width))
+    (counter 1)
+    (ls nil))
+    (while (<= counter num-tab-stops)
+      (setq ls (cons (* width counter) ls))
+      (setq counter (1+ counter)))
+    (set (make-local-variable 'tab-stop-list) (nreverse ls))))
+(defun my-c-mode-hook ()
+  (c-set-style "google")
   (hs-minor-mode t)
-  (interactive)
-  (c-set-style "k&r")
-  (setq indent-tabs-mode nil)
-  (setq default-tab-width 8)
-  (setq c-basic-offset 8)   
-  (setq tab-stop-list ())
-  (setq c-cleanup-list (append c-cleanup-list (list 'brace-else-brace)))
-  (c-toggle-auto-state 1) ;;²»ÓÃ×Ô¶¯»»ÐÐ/1±íÊ¾×Ô¶¯»»ÐÐ
-  (c-toggle-hungry-state)  ;; ´ËÄ£Ê½ÏÂ£¬µ±°´BackspaceÊ±»áÉ¾³ý×î¶àµÄ¿Õ¸ñ
+  (setq tab-width 2) ;; change this to taste, this is what K&R uses :)
+  (my-build-tab-stop-list tab-width)
+  (setq c-basic-offset tab-width)
+  (setq indent-tabs-mode nil) ;; force only spaces for indentation
+  (local-set-key "\C-o" 'ff-get-other-file)
+  (c-set-offset 'substatement-open 0)
+  (c-set-offset 'arglist-intro c-lineup-arglist-intro-after-paren)
+  )
 )
-
+;; google sytle is defined in above function
+(add-hook 'c-mode-hook 'hs-minor-mode)
+(add-hook 'c++-mode-hook 'hs-minor-mode)
 (add-hook 'c-mode-hook 'my-c-mode-hook)
+(add-hook 'c++-mode--hook 'my-c-mode-hook)
 (global-set-key [f1] 'hs-toggle-hiding)
 
 
